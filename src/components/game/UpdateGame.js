@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { getGame, getGameTypes, updateGame } from "../../managers/GameManager.js"
+import { getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
 import "./game.css"
 
 export const UpdateGame = (props) => {
     const navigate = useNavigate()
     const gameId = useParams()
     const [game, setGame] = useState()
-    const [types, setTypes] = useState([])
+    const [categories, setCategories] = useState([])
     let gameCopy = { ...game }
 
     useEffect(() => {
         getGame(gameId.id).then(data => setGame(data))
-        getGameTypes().then(data => setTypes(data))
+        getGameCategories().then(data => setCategories(data))
     }, [])
 
-    const gameTypeMapper = () => {
+    const gameCategoryMapper = () => {
         return (
-            <select className="game__types" onChange={gameDataUpdater} id="game_type" value={game?.game_type.id} >
-                {types.map(type => <option key={`gametype--${type.id}`} value={type.id}>{type.label}</option>)}
+            <select className="game__categories" onChange={gameDataUpdater} id="game_type" value={game?.game_type.id} >
+                {categories.map(category => <option key={`gamecategory--${category.id}`} value={category.id}>{category.label}</option>)}
             </select>)
     }
 
@@ -40,9 +40,9 @@ export const UpdateGame = (props) => {
                     <label htmlFor="input">Name of Game</label>
                     <input
                         className="game__title"
-                        id="name"
+                        id="title"
                         onChange={gameDataUpdater}
-                        defaultValue={game?.name} />
+                        defaultValue={game?.title} />
                     <label htmlFor="input">Number of Players</label>
                     <input
                         type='number'
@@ -50,14 +50,14 @@ export const UpdateGame = (props) => {
                         id="number_of_players"
                         onChange={gameDataUpdater} 
                         defaultValue={game?.number_of_players} />
-                    <label htmlFor="input">Game Maker</label>
+                    <label htmlFor="input">Game Designer</label>
                     <input
-                        className="game__maker"
-                        id="maker"
+                        className="game__designer"
+                        id="designer"
                         onChange={gameDataUpdater}
-                        defaultValue={game?.maker} />
+                        defaultValue={game?.designer} />
                     <label htmlFor="input">Game Category</label>
-                    {gameTypeMapper()}
+                    {gameCategoryMapper()}
                     <label htmlFor="input">Difficulty 1-10</label>
                     <input
                         type='number'

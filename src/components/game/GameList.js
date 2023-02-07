@@ -20,17 +20,17 @@ export const GameList = (props) => {
             >Register New Game</button>
             {
                 games?.map(game => {
-                    return <section onClick={() => navigate(`/editgame/${game.id}`)} key={`game--${game.id}`} className="game">
-                        <div className="game__title">{game.name} by {game.maker}</div>
-                        <div className="game__players">{game.number_of_players} players needed</div>
-                        <div className="game__skillLevel">Skill level is {game.skill_level}/10</div>
-                        <button
+                    return <section onClick={() => navigate(`/games/${game.id}`)} key={`game--${game.id}`} className="game">
+                        <div className="game__title">{game.title} by {game.designer}</div>
+                        {/* <div className="game__players">{game.number_of_players} players needed</div>
+                        <div className="game__skillLevel">Skill level is {game.skill_level}/10</div> */}
+                        {/* <button
                             onClick={evt => {
                                 evt.stopPropagation()
                                 deleteGame(game.id)
                                     .then(data => setGames(data))
                             }}
-                            className="btn btn-primary">Delete</button>
+                            className="btn btn-primary">Delete</button> */}
                     </section>
                 })
             }

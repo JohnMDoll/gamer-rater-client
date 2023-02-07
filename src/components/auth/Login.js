@@ -19,8 +19,8 @@ export const Login = () => {
         loginUser(user)
             .then(res => {
                 if ("valid" in res && res.valid && "token" in res) {
-                    localStorage.setItem("lu_token", res.token)
-                    navigate("/")
+                    localStorage.setItem("gr_token", res.token)
+                    navigate("/games")
                 }
                 else {
                     invalidDialog.current.showModal()
@@ -39,7 +39,7 @@ export const Login = () => {
                     <h1>Level Up</h1>
                     <h2>Please sign in</h2>
                     <fieldset>
-                        <label htmlFor="inputUsername"> Username address </label>
+                        <label htmlFor="inputUsername"> Username</label>
                         <input ref={username} type="username" id="username" className="form-control" placeholder="Username address" required autoFocus />
                     </fieldset>
                     <fieldset>
