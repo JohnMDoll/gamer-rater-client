@@ -1,0 +1,16 @@
+.game--form{
+    display: flex;
+    flex-direction: column;
+    /* width: 50%; */
+    align-items: center;
+    text-align: center;
+}
+
+fieldset input, fieldset select {
+    text-align: center;
+}
+
+.game {
+    margin-bottom: 10px;
+    border: 1px solid gray;
+}
