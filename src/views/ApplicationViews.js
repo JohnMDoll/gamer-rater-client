@@ -6,6 +6,7 @@ import { GameList } from "../components/game/GameList"
 import { UpdateGame } from "../components/game/UpdateGame"
 import { GameForm } from "../components/game/GameForm"
 import { GameDetails } from "../components/game/GameDetails"
+import { ReviewForm } from "../components/game/ReviewForm"
 
 
 export const ApplicationViews = () => {
@@ -17,6 +18,7 @@ export const ApplicationViews = () => {
                 <Route path="/games" element={<GameList />} />
                 <Route path="/games/new" element={<GameForm />} />
                 <Route path="/games/:id" element={<GameDetails />} />
+                <Route exact path="/games/:gameId/review" element={<ReviewForm />} />
             </Route>
         </Routes>
     </>

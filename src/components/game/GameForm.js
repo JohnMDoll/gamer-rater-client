@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from 'react-router-dom'
-import { createGame, getGameCategories } from '../../managers/GameManager.js'
+import { createGame, getGameCategories, createCategory } from '../../managers/GameManager.js'
 
 
 export const GameForm = () => {
@@ -19,14 +19,27 @@ export const GameForm = () => {
     let gameCopy = { ...currentGame }
 
     useEffect(() => {
-        // getGameCategories().then(data => setGameCategories(data))
+        getGameCategories().then(data => setGameCategories(data))
     }, [])
 
+    const catCheck = (e) => {
+        let catCopy = new Set(categories)
+        e.target.checked? 
+        catCopy.add(e.target.value)
+        : catCopy.delete(e.target.value)
+        setCategories(Array.from(catCopy))
+    }
+
     const gameCategoryMapper = () => {
-        return (
-            <select className="game__categories" onChange={gameDataUpdater} name="gameCategoryId" >
-                {gameCategories.map(category => <option key={`gamecategory--${category.id}`} value={category.id}>{category.label}</option>)}
-            </select>)
+        return (<div className="game__categories" >
+                    {gameCategories.map((category) => { return <>
+                        <input onChange={catCheck} name={category.label} type="checkbox" key={`gamecategory--${category.id}`} value={category.id} />
+                        <label htmlFor={category.label}>
+                            {category.label}
+                        </label>
+                    </>})}
+                </div>
+        )
     }
 
     const gameDataUpdater = (evt) => {
@@ -42,6 +55,15 @@ export const GameForm = () => {
                     <label htmlFor="title">Title: </label>
                     <input type="text" name="title" required autoFocus className="form-control"
                         value={currentGame.title}
+                        onChange={gameDataUpdater}
+                    />
+                </div>
+            </fieldset>
+            <fieldset>
+                <div className="form-group">
+                    <label htmlFor="description">Game Description: </label>
+                    <input type="text" name="description" required autoFocus className="form-control"
+                        value={currentGame.description}
                         onChange={gameDataUpdater}
                     />
                 </div>
@@ -102,7 +124,7 @@ export const GameForm = () => {
             </fieldset>
             <fieldset>
                 <div className="form-group">
-                    <label htmlFor="select">Game Category</label>
+                    <label htmlFor="select">Game Categories:</label>
                     {gameCategoryMapper()}
                 </div>
             </fieldset>
@@ -115,19 +137,19 @@ export const GameForm = () => {
                         min_age: parseInt(currentGame.min_age),
                         min_number_of_players: parseInt(currentGame.min_number_of_players),
                         max_number_of_players: parseInt(currentGame.max_number_of_players),
-                        description: "",
+                        description: currentGame.description,
                         est_play_time: parseInt(currentGame.est_play_time),
+                        year_released: currentGame.year_released,
                         designer: currentGame.designer,
-                        title: currentGame.title,
-                        number_of_players: parseInt(currentGame.numberOfPlayers),
+                        title: currentGame.title
                     }
 
                     // Send POST request to your API
                     createGame(game)
-                        // .then(createCategories())
+                        .then((res) => {categories.map((cat) => { createCategory(res.id, cat) })}) //will use returned game_id to match with category ids in table
                         .then(() => navigate("/games"))
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-primary">Save</button>
         </form>
     )
 }

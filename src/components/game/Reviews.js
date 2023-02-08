@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
 import "./game.css"
 
-export const GameDetails = (props) => {
+export const Reviews = (props) => {
     const navigate = useNavigate()
     const gameId = useParams()
     const [game, setGame] = useState()
@@ -16,26 +16,20 @@ export const GameDetails = (props) => {
     const gameCategoryMapper = () => {
         return (
             <ul className="game__categories" name="gameCategoryId" >
-                {game?.categories.map(category => <li key={`gamecategory--${category.id}`} >{category.label}</li>)}
+                {game?.categories.map(category => <li key={`gamecategory--${category?.id}`} >{category.label}</li>)}
             </ul>)
     }
 
     return (
         <>
             {
-
                 <section className="game--form">
-                    <button className="btn btn-2 btn-sep icon-create"
-                        onClick={() => {
-                            navigate({ pathname: `/games/${game.id}/review` })
-                        }}
-                    >Review</button>
                     <h2>Game Details</h2>
                     <div className="game__title" id="name" >
                         {`${game?.title}`}
                     </div>
                     <div className="game__title" id="name" >
-                        <i>{`"${game?.description}"`}</i>
+                        {`"${game?.description}"`}
                     </div>
                     <div className="game__players" id="number_of_players">
                         {`${game?.min_number_of_players}-${game?.max_number_of_players} players`}
