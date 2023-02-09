@@ -19,6 +19,7 @@ export const ApplicationViews = () => {
                 <Route path="/games/new" element={<GameForm />} />
                 <Route path="/games/:id" element={<GameDetails />} />
                 <Route exact path="/games/:gameId/review" element={<ReviewForm />} />
+                <Route exact path="/games/:gameId/edit" element={<UpdateGame />} />
             </Route>
         </Routes>
     </>

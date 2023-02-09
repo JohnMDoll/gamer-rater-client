@@ -8,13 +8,10 @@ export const ReviewForm = () => {
     const navigate = useNavigate()
     const [game, setGame] = useState([])
     const [categories, setCategories] = useState([])
-    const [review, setReview] = useState({
-        review: "",
-    })
+    const [review, setReview] = useState("")
 
     useEffect(() => {
         getGame(gameId).then(data => setGame(data))
-        console.log(game)
     }, [])
 
     return (
@@ -23,7 +20,7 @@ export const ReviewForm = () => {
             <fieldset>
                 <div className="form-group">
                     <textarea type="textarea" name="title" required autoFocus className="form-control"
-                        value={review.review} placeholder="Write your review here"
+                        value={review} placeholder="Write your review here"
                         onChange={e => setReview(e.target.value)}
                     />
                 </div>
@@ -34,7 +31,7 @@ export const ReviewForm = () => {
                     evt.preventDefault()
 
                     const new_review = {
-                        review: review.review,
+                        review: review,
                         gameId: gameId
                     }
 

@@ -25,6 +25,24 @@ export const getGameCategories = () => {
         .then(response => response.json())
 }
 
+export const getReviews = () => {
+    return fetch("http://localhost:8000/reviews", {
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`
+        }
+    })
+        .then(response => response.json())
+}
+
+export const getReview = (id) => {
+    return fetch(`http://localhost:8000/reviews/${id}`, {
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`
+        }
+    })
+        .then(response => response.json())
+}
+
 export const createGame = (game) => {
     return fetch(`http://localhost:8000/games`, {
         headers: {

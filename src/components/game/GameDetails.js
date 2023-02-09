@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { checkGameEdit } from "../../managers/AuthManager.js"
 import { getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
 import "./game.css"
 
@@ -7,7 +8,6 @@ export const GameDetails = (props) => {
     const navigate = useNavigate()
     const gameId = useParams()
     const [game, setGame] = useState()
-    let gameCopy = { ...game }
 
     useEffect(() => {
         getGame(gameId.id).then(data => setGame(data))
@@ -19,11 +19,19 @@ export const GameDetails = (props) => {
                 {game?.categories.map(category => <li key={`gamecategory--${category.id}`} >{category.label}</li>)}
             </ul>)
     }
+    const gameReviewMapper = () => {
+        return (
+            <ul className="game__reviews" name="gameReviewId" >
+                {game?.game_reviews.map(review => <li key={`gamereview--${review.id}`} >
+                    <div>{review.review}</div>
+                    <div>{review.player.full_name || review.player}, {review.date_reviewed}</div>
+                    </li>)}
+            </ul>)
+    }
 
     return (
         <>
             {
-
                 <section className="game--form">
                     <button className="btn btn-2 btn-sep icon-create"
                         onClick={() => {
@@ -31,6 +39,13 @@ export const GameDetails = (props) => {
                         }}
                     >Review</button>
                     <h2>Game Details</h2>
+                    {/* {<button className="btn btn-2 btn-sep icon-create"
+                        onClick={() => {
+                            navigate({ pathname: `/games/${game.id}/edit` })
+                        }}
+                    >Edit Game</button>} */}
+                    {   !game?.can_edit ? "" : 
+            <button className="game-editor" onClick={() => navigate(`./edit`)}>Edit This Game</button>}
                     <div className="game__title" id="name" >
                         {`${game?.title}`}
                     </div>
@@ -57,6 +72,11 @@ export const GameDetails = (props) => {
                         {gameCategoryMapper()}
                     </div>
                     {/* <button onClick={()=>navigate("/newgame")}>Update</button> */}
+                    <div className="game__reviews" id="reviews" >
+                        {`Reviews:`}
+                        {gameReviewMapper()}
+                    </div>
+
                 </section>
             }
         </>
