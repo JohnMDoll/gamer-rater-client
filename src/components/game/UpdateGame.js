@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { checkGameEdit } from "../../managers/AuthManager.js"
-import { createCategory, createGame, getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
+import { createCategory, createGame, getGame, getGameCategories, updateCategory, updateGame } from "../../managers/GameManager.js"
 import "./game.css"
 
 export const UpdateGame = (props) => {
@@ -17,7 +17,7 @@ export const UpdateGame = (props) => {
         designer: "",
         description: "",
         est_play_time: 0,
-        categories: [{id:0}],
+        categories: [],
         creator: 0
     })
     let gameCopy = { ...currentGame }
@@ -26,20 +26,32 @@ export const UpdateGame = (props) => {
         getGame(gameId.gameId).then(data => setCurrentGame(data))
         getGameCategories().then(data => setGameCategories(data))
     }, [])
-    
+
+    useEffect(() => {
+        let catCopy = new Set(categories)
+        currentGame.categories.map(cat => {
+            catCopy.add(cat.id)
+        })
+        setCategories(Array.from(catCopy))
+    }, [currentGame.categories])
+
     const catCheck = (e) => {
         let catCopy = new Set(categories)
-        e.target.checked ?
-            catCopy.add(e.target.value)
-            : catCopy.delete(e.target.value)
-        setCategories(Array.from(catCopy))
+        if (e.target.checked) {
+            catCopy.add(parseInt(e.target.value))
+            setCategories(Array.from(catCopy))
+        } else {
+            catCopy.delete(parseInt(e.target.value))
+            setCategories(Array.from(catCopy))
+        }
     }
 
+    // {...currentGame.categories.find(cat => cat.id === category.id)? "checked" : console.log(category.id)}
     const gameCategoryMapper = () => {
         return (<div className="game__categories" >
             {gameCategories.map((category) => {
                 return <>
-                    <input onChange={catCheck} checked={currentGame?.categories.find(cat => cat.id === category.id)} name={category.label} type="checkbox" key={`gamecategory--${category.id}`} value={category.id} />
+                    <input onClick={catCheck} defaultChecked={currentGame.categories.find(cat => cat.id === category.id)} name={category.label} type="checkbox" key={`gamecategory--${category.id}`} value={category.id} />
                     <label key={`gamecategorylabel--${category.id}`} htmlFor={category.label}>
                         {category.label}
                     </label>
@@ -140,6 +152,7 @@ export const UpdateGame = (props) => {
                         evt.preventDefault()
 
                         const game = {
+                            id: currentGame.id,
                             min_age: parseInt(currentGame.min_age),
                             min_number_of_players: parseInt(currentGame.min_number_of_players),
                             max_number_of_players: parseInt(currentGame.max_number_of_players),
@@ -151,9 +164,9 @@ export const UpdateGame = (props) => {
                         }
 
                         // Send POST request to your API
-                        // updateGame(game)
-                        //     .then((res) => {categories.map((cat) => { updateCategory(res.id, cat) })}) //will use returned game_id to match with category ids in table
-                        //     .then(() => navigate("/games"))
+                        updateGame(game)
+                            .then((res) => { updateCategory(game.id, categories) }) 
+                            .then(() => navigate(`/games/${game.id}`))
                     }}
                     className="btn btn-primary">Save</button>
             </form>

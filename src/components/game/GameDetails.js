@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { checkGameEdit } from "../../managers/AuthManager.js"
-import { getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
+import { createRating, getGame, getGameCategories, updateGame } from "../../managers/GameManager.js"
 import "./game.css"
 
 export const GameDetails = (props) => {
     const navigate = useNavigate()
     const gameId = useParams()
-    const [game, setGame] = useState()
+    const [game, setGame] = useState({categories: []})
+    const [newRating, setNewRating] = useState(5)
 
     useEffect(() => {
         getGame(gameId.id).then(data => setGame(data))
     }, [])
+
+    useEffect(() => {
+        getGame(gameId.id).then(data => setGame(data))
+    }, [game.average_rating])
 
     const gameCategoryMapper = () => {
         return (
@@ -22,10 +27,10 @@ export const GameDetails = (props) => {
     const gameReviewMapper = () => {
         return (
             <ul className="game__reviews" name="gameReviewId" >
-                {game?.game_reviews.map(review => <li key={`gamereview--${review.id}`} >
+                {game?.game_reviews?.map(review => <li key={`gamereview--${review.id}`} >
                     <div>{review.review}</div>
-                    <div>{review.player.full_name || review.player}, {review.date_reviewed}</div>
-                    </li>)}
+                    <div>{review.player.full_name || review.player}, {new Date(review.date_reviewed).toLocaleString('en-US', { timeZone: 'CST' })}</div>
+                </li>)}
             </ul>)
     }
 
@@ -39,13 +44,8 @@ export const GameDetails = (props) => {
                         }}
                     >Review</button>
                     <h2>Game Details</h2>
-                    {/* {<button className="btn btn-2 btn-sep icon-create"
-                        onClick={() => {
-                            navigate({ pathname: `/games/${game.id}/edit` })
-                        }}
-                    >Edit Game</button>} */}
-                    {   !game?.can_edit ? "" : 
-            <button className="game-editor" onClick={() => navigate(`./edit`)}>Edit This Game</button>}
+                    {!game?.can_edit ? "" :
+                        <button className="game-editor" onClick={() => navigate(`./edit`)}>Edit This Game</button>}
                     <div className="game__title" id="name" >
                         {`${game?.title}`}
                     </div>
@@ -71,12 +71,25 @@ export const GameDetails = (props) => {
                         {`Categories:`}
                         {gameCategoryMapper()}
                     </div>
-                    {/* <button onClick={()=>navigate("/newgame")}>Update</button> */}
+                    <div className="game__categories" id="categories" >
+                        {`Rating: ${game?.average_rating}/10`}
+                    </div>
+                    <div className="game__categories" id="categories" >
+                        {`Your Rating: 1`}
+                        <input type="range" min="1" max="10" onChange={(e) => setNewRating(e.target.value)}
+                            defaultValue="5" className="slider" id="myRange" />
+                        {`10  `}
+                        <button onClick={() => {
+                            createRating(newRating, gameId.id )
+                                .then(getGame(gameId.id))
+                        }}>
+                            Submit Rating
+                        </button>
+                    </div>
                     <div className="game__reviews" id="reviews" >
                         {`Reviews:`}
                         {gameReviewMapper()}
                     </div>
-
                 </section>
             }
         </>
